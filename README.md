@@ -10,19 +10,19 @@ Usage:
     public class Test extends Activity implements
             BTLEUart.BTLEConnection,
             BTLEUart.BTLEData,
-            BTLEUart.BTLEInit,
-            BTLEUart.BTLESupport{
+            BTLEUart.BTLEInit{
+            
+      private BTLEUart uart;
 
       @Override
       protected void onCreate(Bundle savedInstanceState) {
           super.onCreate(savedInstanceState);
 
           // All listeners are optional :) 
-          BTLEUart uart = new BTLEUart(this)
+          uart = new BTLEUart(this)
                   .withBTLEConnectionListener(this)
                   .withBTLEDataListener(this)
                   .withBTLEInitListener(this)
-                  .withBTLESupportListener(this)
                   .init();
 
           uart.connectDevice("your bluetooth MAC address");
@@ -59,11 +59,14 @@ Usage:
 
       @Override
       public void onDataAvailable(String received) {
-        // Connected device received data
+        // Receive data from connected device
       }
-
-
+      
+      
+      // Very IMPORTANT !
       @Override
-      public void onDeviceNotSupported() {
-        // Connected device dont support this kind of UART implementation
+      public void onDestroy(){
+        if(uart != null)
+            uart.onDestroy();
       }
+      
